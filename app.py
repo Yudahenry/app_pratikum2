@@ -1,3 +1,4 @@
+import os
 import json
 import joblib
 import pandas as pd
@@ -9,6 +10,37 @@ st.set_page_config(
     page_icon="📊",
     layout="centered"
 )
+
+# --- OTOMATIS BUAT FILE CONTOH DATA CSV JIKA BELUM ADA ---
+if not os.path.exists("contoh_data_baru.csv"):
+    sample_data = pd.DataFrame([
+        {
+            "tenure": 12, "MonthlyCharges": 65.00, "TotalCharges": 800.00, 
+            "SeniorCitizen": 0, "Contract": "Month-to-month", 
+            "PaymentMethod": "Electronic check", "InternetService": "DSL", "PaperlessBilling": "Yes"
+        },
+        {
+            "tenure": 34, "MonthlyCharges": 56.95, "TotalCharges": 1889.50, 
+            "SeniorCitizen": 0, "Contract": "One year", 
+            "PaymentMethod": "Mailed check", "InternetService": "DSL", "PaperlessBilling": "No"
+        },
+        {
+            "tenure": 2, "MonthlyCharges": 70.70, "TotalCharges": 151.65, 
+            "SeniorCitizen": 1, "Contract": "Month-to-month", 
+            "PaymentMethod": "Electronic check", "InternetService": "Fiber optic", "PaperlessBilling": "Yes"
+        },
+        {
+            "tenure": 45, "MonthlyCharges": 42.30, "TotalCharges": 1840.75, 
+            "SeniorCitizen": 0, "Contract": "One year", 
+            "PaymentMethod": "Bank transfer (automatic)", "InternetService": "DSL", "PaperlessBilling": "No"
+        },
+        {
+            "tenure": 62, "MonthlyCharges": 89.10, "TotalCharges": 5500.00, 
+            "SeniorCitizen": 0, "Contract": "Two year", 
+            "PaymentMethod": "Credit card (automatic)", "InternetService": "Fiber optic", "PaperlessBilling": "Yes"
+        }
+    ])
+    sample_data.to_csv("contoh_data_baru.csv", index=False)
 
 # Load Model dan Metadata secara Cached agar efisien
 @st.cache_resource
@@ -71,7 +103,6 @@ with tab1:
                 min_value=0.0, max_value=10000.0, value=800.0,
                 help="Total keseluruhan biaya yang telah dibayarkan."
             )
-            # Jika fitur senior citizen ada di model info
             senior_citizen = st.selectbox(
                 "Status Warga Senior (Senior Citizen)", 
                 options=[0, 1], 
@@ -150,17 +181,20 @@ with tab2:
         "dianalisis secara otomatis oleh model secara sekaligus."
     )
     
-    # Tombol Unduh Sampel CSV
+    # 📥 Tombol Unduh Sampel / Dataset Uji Coba (Selalu Tersedia)
     try:
         with open("contoh_data_baru.csv", "rb") as f:
             st.download_button(
-                label="📥 Unduh Contoh Format File CSV",
+                label="📥 Unduh Dataset / Contoh Format File CSV Uji Coba",
                 data=f,
                 file_name="contoh_data_baru.csv",
-                mime="text/csv"
+                mime="text/csv",
+                help="Klik untuk mengunduh sampel data uji coba CSV guna diunggah kembali ke bawah."
             )
-    except FileNotFoundError:
-        st.info("File contoh_data_baru.csv belum tersedia di direktori.")
+    except Exception as e:
+        st.warning(f"Gagal memuat file unduhan: {e}")
+
+    st.markdown("---")
 
     uploaded_file = st.file_uploader("Pilih file CSV pelanggan", type=["csv"])
     
@@ -187,7 +221,7 @@ with tab2:
                     st.download_button(
                         label="📥 Unduh Hasil Prediksi (CSV)",
                         data=csv_output,
-                        file_name="hasil_prediksi_churn.csv",
+                        file_name="hasil_pred_telco_churn.csv",
                         mime="text/csv"
                     )
             except Exception as e:
