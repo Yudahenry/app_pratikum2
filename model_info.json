@@ -1,0 +1,41 @@
+{
+  "nama_model": "Random Forest Classifier (Kaggle Telco)",
+  "fitur_numerik": [
+    "tenure",
+    "MonthlyCharges",
+    "TotalCharges"
+  ],
+  "fitur_kategori": [
+    "Contract",
+    "PaymentMethod",
+    "InternetService",
+    "PaperlessBilling",
+    "gender"
+  ],
+  "kelas": [
+    "No",
+    "Yes"
+  ],
+  "rentang_fitur": {
+    "tenure": [
+      0.0,
+      72.0
+    ],
+    "MonthlyCharges": [
+      18.25,
+      118.75
+    ],
+    "TotalCharges": [
+      18.8,
+      8684.8
+    ]
+  },
+  "metrik": {
+    "accuracy": 0.7722,
+    "f1_macro": 0.6923,
+    "n_test": 1409
+  },
+  "versi": {
+    "scikit-learn": "1.3.0"
+  }
+}
